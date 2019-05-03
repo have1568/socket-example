@@ -2,7 +2,7 @@ package net.wang.socket.udp;
 
 public class MessageBuilder {
 
-    public static final String SB_PREFIX = "收到暗号，我是(SN)";
+    public static final String SN_PREFIX = "收到暗号，我是(SN) :";
     public static final String PORT_PREFIX = "这是暗号，请回电端口 (PORT) :";
 
     public static String buildWithPort(int port) {
@@ -18,15 +18,15 @@ public class MessageBuilder {
     }
 
     public static String buildWithSN(String sn) {
-        return SB_PREFIX + sn;
+        return SN_PREFIX + sn;
     }
 
-    public static int parseSN(String data) {
-        if (data.startsWith(SB_PREFIX)) {
-            return Integer.parseInt(data.substring(SB_PREFIX.length()));
+    public static String parseSN(String data) {
+        if (data.startsWith(SN_PREFIX)) {
+            return data.substring(SN_PREFIX.length());
         }
 
-        return -1;
+        return "";
     }
 
 }
