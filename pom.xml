@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>socket-base</module>
+        <module>socket-udp-tcp</module>
     </modules>
     <build>
         <plugins>
