@@ -9,8 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>socket-udp-search</artifactId>
-
+    <artifactId>socket-udp-tcp</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -24,4 +23,5 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
 </project>
