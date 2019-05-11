@@ -12,6 +12,7 @@
         <module>socket-base</module>
         <module>socket-udp-search</module>
         <module>socket-udp-tcp</module>
+        <module>socket-tcp-channel</module>
     </modules>
     <build>
         <plugins>
