@@ -7,14 +7,17 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 public class TCPServer implements ClientHandlerCallback {
 
     private final int port;
     private List<ClientHandler> clientHandlerList = new CopyOnWriteArrayList<>();
-    private ExecutorService pool = new ThreadPoolExecutor(10, 30, 5, TimeUnit.SECONDS, new ArrayBlockingQueue(2000));
+    private ExecutorService pool = Executors.newSingleThreadExecutor();
+    private ExecutorService messagePool = Executors.newCachedThreadPool();
 
     private ServerSocket serverSocket;
 
@@ -40,7 +43,7 @@ public class TCPServer implements ClientHandlerCallback {
                         ClientHandler clientHandler = new ClientHandler(client, this);
                         //读取并打印
                         clientHandlerList.add(clientHandler);
-                        pool.execute(() -> clientHandler.readAndPrint());
+                        clientHandler.readAndPrint();
                     } catch (IOException e) {
                         log.info("客户端连接异常");
                         //e.printStackTrace();
@@ -76,7 +79,7 @@ public class TCPServer implements ClientHandlerCallback {
 
     @Override
     public void onNewMessage(ClientHandler clientHandler, String message) {
-        pool.execute(() -> {
+        messagePool.execute(() -> {
             for (ClientHandler handler : clientHandlerList) {
                 if (!clientHandler.equals(handler)) {
                     handler.send(message);

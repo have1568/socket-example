@@ -54,7 +54,6 @@ public class TCPClient {
                             }
                             log.info("TCPClient Read Data :: {}", line);
                         } catch (SocketTimeoutException socketTimeoutException) {
-                            log.warn("Time Out !");
                             continue;
                         }
 

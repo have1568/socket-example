@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 public class ClientHandler {
 
     private Socket socket;  //Socket TCP 客户端
-    private ExecutorService pool = Executors.newSingleThreadExecutor();
+    private ExecutorService pool = Executors.newCachedThreadPool();
     private ClientHandlerCallback handlerCallback;
     boolean readFlag = true;
 
