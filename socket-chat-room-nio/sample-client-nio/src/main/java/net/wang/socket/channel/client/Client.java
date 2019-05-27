@@ -27,6 +27,9 @@ public class Client {
         do {
             String line = input.readLine();
             client.sendData(line);
+            client.sendData(line);
+            client.sendData(line);
+            client.sendData(line);
 
             if ("1".equalsIgnoreCase(line)) {
                 break;

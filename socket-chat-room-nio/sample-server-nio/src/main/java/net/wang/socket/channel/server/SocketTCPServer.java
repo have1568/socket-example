@@ -9,7 +9,6 @@ public interface SocketTCPServer {
 
     boolean start();
 
-
     void listenHandler(Selector selector, ServerSocketChannel serverSocketChannel);
 
     void readHandler(SocketChannel socketChannel);

@@ -58,6 +58,7 @@ public class TCPServer implements SocketTCPServer {
             listenerHandlerPool.execute(() -> listenHandler(selector, serverSocketChannel));
 
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;
@@ -83,25 +84,25 @@ public class TCPServer implements SocketTCPServer {
                     //9. 判断具体是什么事件准备就绪
                     if (key.isAcceptable()) {
                         //10. 若“接收就绪”，获取客户端连接
-                        SocketChannel sChannel = serverSocketChannel.accept();
+                        SocketChannel socketChannel = serverSocketChannel.accept();
 
                         //11. 切换非阻塞模式
-                        sChannel.configureBlocking(false);
+                        socketChannel.configureBlocking(false);
 
                         //12. 将该通道注册到选择器上
-                        sChannel.register(selector, SelectionKey.OP_READ);
+                        socketChannel.register(selector, SelectionKey.OP_READ);
 
                         //将准备就绪的通道加入集合
-                        socketChannels.add(sChannel);
+                        socketChannels.add(socketChannel);
                     }
 
                     if (key.isReadable()) {
 
                         //13. 获取当前选择器上“读就绪”状态的通道
-                        SocketChannel sChannel = (SocketChannel) key.channel();
+                        SocketChannel socketChannel = (SocketChannel) key.channel();
 
                         //处理接收到的消息
-                        readHandler(sChannel);
+                        readHandler(socketChannel);
                     }
                     //15. 取消选择键 SelectionKey
                     iterator.remove();
@@ -127,8 +128,8 @@ public class TCPServer implements SocketTCPServer {
                     int read = 0;
                     while ((read = socketChannel.read(byteBuffer)) > 0) {
                         byteBuffer.flip();
-                        String str = new String(byteBuffer.array(), 0, read - 1).replaceAll("\n|\r","");
-                        log.info("Read Data :: {} length :: {}", str,str.length());
+                        String str = new String(byteBuffer.array(), 0, read - 1).replaceAll("\n|\r", "");
+                        log.info("Read Data :: {} length :: {}", str, str.length());
                         byteBuffer.clear();
                         onNewMessage(socketChannel, str);
                     }
@@ -150,7 +151,7 @@ public class TCPServer implements SocketTCPServer {
             final ByteBuffer byteBuffer = ByteBuffer.allocate(256);
             byteBuffer.clear();
             byteBuffer.put((msg + "\n").getBytes());
-            // 反转操作, 重点
+            // 读取模式
             byteBuffer.flip();
             //log.info("Write Data :: {}", msg);
             while (byteBuffer.hasRemaining()) {
@@ -209,13 +210,13 @@ public class TCPServer implements SocketTCPServer {
     /**
      * 循环向已连接的客户端发送消息，实现类似广播的功能
      *
-     * @param line
+     * @param message
      */
     @Override
-    public void broadcast(String line) {
-        log.info("size = {} ,data = {}", socketChannels.size(), line);
+    public void broadcast(String message) {
+        log.info("size = {} ,data = {}", socketChannels.size(), message);
         for (SocketChannel socketChannel : socketChannels) {
-            writeHandler(socketChannel, line);
+            writeHandler(socketChannel, message);
         }
     }
 }
